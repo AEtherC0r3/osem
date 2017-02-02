@@ -146,7 +146,7 @@ gem 'font-awesome-rails'
 gem 'redcarpet'
 
 # as rdoc generator
-gem 'rdoc-generator-fivefish'
+gem 'rdoc-generator-fivefish', '<0.2'
 
 # for visitor tracking
 gem 'ahoy_matey'
@@ -193,6 +193,7 @@ gem 'sprockets-rails'
 # Use guard and spring for testing in development
 group :development do
   # to launch specs when files are modified
+  gem 'guard', '<2.12.7'
   gem 'guard-rspec', '~> 4.2.8'
   gem 'spring-commands-rspec'
   # for static code analisys
