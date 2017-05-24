@@ -21,7 +21,7 @@ gem 'responders', '~> 2.0'
 gem 'mysql2'
 
 # for observing records
-gem 'rails-observers'
+gem 'rails-observers', :git => 'https://github.com/rails/rails-observers', :branch => 'master'
 
 # for tracking data changes
 gem 'paper_trail'
