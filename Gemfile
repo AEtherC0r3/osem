@@ -58,7 +58,7 @@ gem 'unobtrusive_flash', '>=3'
 gem 'transitions', :require => %w( transitions active_record/transitions )
 
 # for comments
-gem 'awesome_nested_set', '~> 3.0.0.rc.5'
+gem 'awesome_nested_set', '~> 3.1.3'
 gem 'acts_as_commentable_with_threading'
 
 # as templating language
@@ -178,7 +178,7 @@ gem 'cloudinary'
 # for setting app configuration in the environment
 gem 'dotenv-rails'
 
-# For countable.js 
+# For countable.js
 gem "countable-rails", "~> 0.0.1"
 
 # Both are not in a group as we use it also for rake data:demo
