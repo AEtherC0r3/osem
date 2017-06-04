@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,19 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170302145716) do
+ActiveRecord::Schema.define(version: 20170419132148) do
 
   create_table "ahoy_events", force: :cascade do |t|
-    t.uuid     "visit_id",   limit: 16
+    t.binary   "visit_id",   limit: 16
     t.integer  "user_id"
     t.string   "name"
     t.text     "properties"
     t.datetime "time"
+    t.index ["time"], name: "index_ahoy_events_on_time"
+    t.index ["user_id"], name: "index_ahoy_events_on_user_id"
+    t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
   end
-
-  add_index "ahoy_events", ["time"], name: "index_ahoy_events_on_time"
-  add_index "ahoy_events", ["user_id"], name: "index_ahoy_events_on_user_id"
-  add_index "ahoy_events", ["visit_id"], name: "index_ahoy_events_on_visit_id"
 
   create_table "answers", force: :cascade do |t|
     t.string   "title"
@@ -63,11 +61,10 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.integer  "parent_id"
     t.integer  "lft"
     t.integer  "rgt"
+    t.index ["commentable_id"], name: "index_comments_on_commentable_id"
+    t.index ["commentable_type"], name: "index_comments_on_commentable_type"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
-
-  add_index "comments", ["commentable_id"], name: "index_comments_on_commentable_id"
-  add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type"
-  add_index "comments", ["user_id"], name: "index_comments_on_user_id"
 
   create_table "commercials", force: :cascade do |t|
     t.string   "commercial_id"
@@ -132,9 +129,8 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.string   "queue"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
-
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "difficulty_levels", force: :cascade do |t|
     t.string   "title"
@@ -185,12 +181,11 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.datetime "start_time"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["event_id", "schedule_id"], name: "index_event_schedules_on_event_id_and_schedule_id", unique: true
+    t.index ["event_id"], name: "index_event_schedules_on_event_id"
+    t.index ["room_id"], name: "index_event_schedules_on_room_id"
+    t.index ["schedule_id"], name: "index_event_schedules_on_schedule_id"
   end
-
-  add_index "event_schedules", ["event_id", "schedule_id"], name: "index_event_schedules_on_event_id_and_schedule_id", unique: true
-  add_index "event_schedules", ["event_id"], name: "index_event_schedules_on_event_id"
-  add_index "event_schedules", ["room_id"], name: "index_event_schedules_on_room_id"
-  add_index "event_schedules", ["schedule_id"], name: "index_event_schedules_on_schedule_id"
 
   create_table "event_types", force: :cascade do |t|
     t.string  "title",                                 null: false
@@ -290,9 +285,8 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.datetime "voting_end_date"
     t.integer  "selected_schedule_id"
     t.integer  "schedule_interval",    default: 15,    null: false
+    t.index ["selected_schedule_id"], name: "index_programs_on_selected_schedule_id"
   end
-
-  add_index "programs", ["selected_schedule_id"], name: "index_programs_on_selected_schedule_id"
 
   create_table "qanswers", force: :cascade do |t|
     t.integer  "question_id"
@@ -362,10 +356,9 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.string   "description"
     t.integer  "resource_id"
     t.string   "resource_type"
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index ["name"], name: "index_roles_on_name"
   end
-
-  add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
-  add_index "roles", ["name"], name: "index_roles_on_name"
 
   create_table "rooms", force: :cascade do |t|
     t.string  "guid",     null: false
@@ -378,9 +371,8 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.integer  "program_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_schedules_on_program_id"
   end
-
-  add_index "schedules", ["program_id"], name: "index_schedules_on_program_id"
 
   create_table "splashpages", force: :cascade do |t|
     t.integer  "conference_id"
@@ -447,6 +439,7 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.integer  "quantity",      default: 1
     t.integer  "user_id"
     t.integer  "payment_id"
+    t.integer  "week"
   end
 
   create_table "tickets", force: :cascade do |t|
@@ -500,19 +493,17 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.boolean  "is_admin",               default: false
     t.string   "username"
     t.boolean  "is_disabled",            default: false
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
-
-  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  add_index "users", ["username"], name: "index_users_on_username", unique: true
 
   create_table "users_roles", force: :cascade do |t|
     t.integer "role_id"
     t.integer "user_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
-
-  add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
 
   create_table "vchoices", force: :cascade do |t|
     t.integer "vday_id"
@@ -554,12 +545,11 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.text     "object_changes"
     t.datetime "created_at"
     t.integer  "conference_id"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
-  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
-
   create_table "visits", force: :cascade do |t|
-    t.uuid     "visitor_id",       limit: 16
+    t.binary   "visitor_id",       limit: 16
     t.string   "ip"
     t.text     "user_agent"
     t.text     "referrer"
@@ -579,9 +569,8 @@ ActiveRecord::Schema.define(version: 20170302145716) do
     t.string   "utm_content"
     t.string   "utm_campaign"
     t.datetime "started_at"
+    t.index ["user_id"], name: "index_visits_on_user_id"
   end
-
-  add_index "visits", ["user_id"], name: "index_visits_on_user_id"
 
   create_table "votes", force: :cascade do |t|
     t.integer  "event_id"
