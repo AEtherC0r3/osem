@@ -45,7 +45,7 @@ class Track < ActiveRecord::Base
     event :restart do
       transitions to: :new, from: [:rejected, :withdrawn, :canceled]
     end
-    event :readiness_to_accept do
+    event :to_accept do
       transitions to: :to_accept, from: [:new]
     end
     event :accept do
@@ -54,7 +54,7 @@ class Track < ActiveRecord::Base
     event :confirm do
       transitions to: :confirmed, from: [:accepted], on_transition: :assign_role_to_submitter
     end
-    event :readiness_to_reject do
+    event :to_reject do
       transitions to: :to_reject, from: [:new]
     end
     event :reject do
@@ -135,6 +135,19 @@ class Track < ActiveRecord::Base
   # * +false+ -> If the track's state is neither 'accepted' nor 'confirmed'
   def self_organized_and_accepted_or_confirmed?
     self_organized? && (accepted? || confirmed?)
+  end
+
+  def update_state(transition)
+    error = ''
+
+    begin
+      send(transition)
+    rescue Transitions::InvalidTransition => e
+      error += "State update failed. #{e.message} "
+    end
+
+    error += errors.full_messages.join(', ') unless save
+    error
   end
 
   private

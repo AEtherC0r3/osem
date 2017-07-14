@@ -40,7 +40,12 @@
                 = track.color
             %td
               - if track.self_organized?
-                = track.state
+                .btn-group
+                  %button{ type: 'button', class: 'btn btn-link dropdown-toggle', 'data-toggle' => 'dropdown' }
+                    = track.state.humanize
+                    %span.caret
+                  %ul.dropdown-menu{ role: 'menu' }
+                    = render 'change_state_dropdown', track: track
               - else
                 = track.state.humanize
             %td
@@ -72,8 +77,9 @@
                 N/A
             %td
               .btn-group{role: "group"}
-                = link_to 'Edit', edit_admin_conference_program_track_path(@conference.short_title, track),
-                method: :get, class: 'btn btn-primary'
+                - if can? :edit, track
+                  = link_to 'Edit', edit_admin_conference_program_track_path(@conference.short_title, track),
+                  method: :get, class: 'btn btn-primary'
                 - if can? :destroy, track
                   = link_to 'Delete', admin_conference_program_track_path(@conference.short_title, track),
                   method: :delete, class: 'btn btn-danger',
