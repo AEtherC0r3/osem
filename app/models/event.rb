@@ -45,6 +45,7 @@ class Event < ActiveRecord::Base
   validates :max_attendees, numericality: { only_integer: true, greater_than_or_equal_to: 1, allow_nil: true }
 
   validate :max_attendees_no_more_than_room_size
+  validate :acceptable_track
 
   scope :confirmed, -> { where(state: 'confirmed') }
   scope :canceled, -> { where(state: 'canceled') }
@@ -302,5 +303,12 @@ class Event < ActiveRecord::Base
 
   def conference_id
     program.conference_id
+  end
+
+  ##
+  # Don't allow self-organized tracks that aren't confirmed or aren't included in the cfp
+  def acceptable_track
+    return if !track || !track.self_organized?
+    errors.add(:track, 'must be a regular track or a confirmed self-organized track that accepts proposals') unless track.confirmed? && track.cfp_active
   end
 end

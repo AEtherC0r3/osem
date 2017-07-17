@@ -39,4 +39,12 @@ module EventsHelper
       content_tag :span, 'REPLACEMENT', class: (['label', 'label-info'] + label_classes)
     end
   end
+
+  def track_selector_input(form)
+    if @program.tracks.any?
+      form.input :track_id, as: :select,
+                            collection: @program.tracks.map { |track| [track.name, track.id] if !track.self_organized? || track.confirmed? && track.cfp_active }.compact,
+                            include_blank: true
+    end
+  end
 end
