@@ -4,7 +4,7 @@
     = "#{event_types(@conference)}."
   - if @program.tracks.any?
     Proposals should fit in one of the
-    = "#{pluralize(@program.tracks.count, 'track')}:"
+    = "#{pluralize(@program.tracks.where(state: 'confirmed', cfp_active: true).count, 'track')}:"
     = "#{tracks(@conference)}."
   - if @program.cfp_open?
     The submission period has begun
