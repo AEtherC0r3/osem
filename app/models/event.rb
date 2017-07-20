@@ -306,9 +306,9 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # Don't allow self-organized tracks that aren't confirmed or aren't included in the cfp
+  # Don't allow trakcs that aren't confirmed or aren't included in the cfp
   def acceptable_track
-    return if !track || !track.self_organized?
+    return unless track
     errors.add(:track, 'must be a regular track or a confirmed self-organized track that accepts proposals') unless track.confirmed? && track.cfp_active
   end
 end

@@ -24,7 +24,7 @@ class Track < ActiveRecord::Base
             presence: true,
             inclusion: { in: %w(new to_accept accepted confirmed to_reject rejected canceled withdrawn) },
             if: :self_organized?
-  validates :cfp_active, inclusion: { in: [true, false] }, if: :self_organized?
+  validates :cfp_active, inclusion: { in: [true, false] }
   validates :start_date, presence: true, if: :self_organized_and_accepted_or_confirmed?
   validates :end_date, presence: true, if: :self_organized_and_accepted_or_confirmed?
   validates :room, presence: true, if: :self_organized_and_accepted_or_confirmed?
