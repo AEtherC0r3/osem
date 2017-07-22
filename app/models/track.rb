@@ -22,8 +22,7 @@ class Track < ActiveRecord::Base
             }
   validates :state,
             presence: true,
-            inclusion: { in: %w(new to_accept accepted confirmed to_reject rejected canceled withdrawn) },
-            if: :self_organized?
+            inclusion: { in: %w(new to_accept accepted confirmed to_reject rejected canceled withdrawn) }
   validates :cfp_active, inclusion: { in: [true, false] }
   validates :start_date, presence: true, if: :self_organized_and_accepted_or_confirmed?
   validates :end_date, presence: true, if: :self_organized_and_accepted_or_confirmed?
@@ -107,6 +106,7 @@ class Track < ActiveRecord::Base
 
     events.each do |event|
       event.track = nil
+      event.save!
     end
   end
 

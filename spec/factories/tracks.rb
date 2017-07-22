@@ -12,6 +12,9 @@ FactoryGirl.define do
       association :submitter, factory: :user
       state 'new'
       cfp_active false
+      start_date { Date.today }
+      end_date { Date.today }
+      room
     end
   end
 end
