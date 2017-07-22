@@ -27,7 +27,7 @@ class Track < ActiveRecord::Base
   validates :start_date, presence: true, if: :self_organized_and_accepted_or_confirmed?
   validates :end_date, presence: true, if: :self_organized_and_accepted_or_confirmed?
   validates :room, presence: true, if: :self_organized_and_accepted_or_confirmed?
-  validate :valid_dates, if: :self_organized_and_accepted_or_confirmed?
+  validate :valid_dates
 
   before_validation :capitalize_color
 
@@ -175,25 +175,23 @@ class Track < ActiveRecord::Base
   end
 
   def valid_dates
-    return unless start_date && end_date
-
-    if program && program.conference && program.conference.start_date && (start_date < program.conference.start_date)
+    if start_date && program && program.conference && program.conference.start_date && (start_date < program.conference.start_date)
       errors.add(:start_date, "can't be before the conference start date (#{program.conference.end_date})")
     end
 
-    if program && program.conference && program.conference.start_date && (end_date < program.conference.start_date)
+    if end_date && program && program.conference && program.conference.start_date && (end_date < program.conference.start_date)
       errors.add(:end_date, "can't be before the conference start date (#{program.conference.end_date})")
     end
 
-    if program && program.conference && program.conference.end_date && (start_date > program.conference.end_date)
+    if start_date && program && program.conference && program.conference.end_date && (start_date > program.conference.end_date)
       errors.add(:start_date, "can't be after the conference end date (#{program.conference.end_date})")
     end
 
-    if program && program.conference && program.conference.end_date && (end_date > program.conference.end_date)
+    if end_date && program && program.conference && program.conference.end_date && (end_date > program.conference.end_date)
       errors.add(:end_date, "can't be after the conference end date (#{program.conference.end_date})")
     end
 
-    if start_date > end_date
+    if start_date && end_date && (start_date > end_date)
       errors.add(:start_date, 'can\'t be after the end_date')
     end
   end
