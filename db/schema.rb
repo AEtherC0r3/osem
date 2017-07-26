@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170721001700) do
+ActiveRecord::Schema.define(version: 20170726065629) do
 
   create_table "ahoy_events", force: :cascade do |t|
     t.integer  "visit_id"
@@ -524,6 +524,7 @@ ActiveRecord::Schema.define(version: 20170721001700) do
     t.integer  "room_id"
     t.date     "start_date"
     t.date     "end_date"
+    t.text     "relevance"
   end
 
   add_index "tracks", ["room_id"], name: "index_tracks_on_room_id"

@@ -48,6 +48,22 @@ describe Track do
       it { is_expected.to_not validate_presence_of(:room) }
     end
 
+    context 'when self_organized? returns true' do
+      before :each do
+        allow(subject).to receive(:self_organized?).and_return(true)
+      end
+
+      it { is_expected.to validate_presence_of(:relevance) }
+    end
+
+    context 'when self_organized? returns false' do
+      before :each do
+        allow(subject).to receive(:self_organized?).and_return(false)
+      end
+
+      it { is_expected.to_not validate_presence_of(:relevance) }
+    end
+
     # If we assume that the track's and conference's start, end dates are sorted
     # in explicitly increasing order then we have to test for all possible
     # permutations which are P(4, 4) = 24
