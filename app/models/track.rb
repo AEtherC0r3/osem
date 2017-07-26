@@ -28,6 +28,7 @@ class Track < ActiveRecord::Base
   validates :end_date, presence: true, if: :self_organized_and_accepted_or_confirmed?
   validates :room, presence: true, if: :self_organized_and_accepted_or_confirmed?
   validate :valid_dates
+  validate :valid_room, if: :self_organized_and_accepted_or_confirmed?
 
   before_validation :capitalize_color
 
@@ -196,6 +197,14 @@ class Track < ActiveRecord::Base
 
     if start_date && end_date && (start_date > end_date)
       errors.add(:start_date, 'can\'t be after the end_date')
+    end
+  end
+
+  ##
+  # Verify that the room is a room of the conference
+  def valid_room
+    if room && room.venue && room.venue.conference && program && program.conference && (program.conference != room.venue.conference)
+      errors.add(:room, "must be a room of #{program.conference.venue.name}")
     end
   end
 end

@@ -59,6 +59,32 @@ describe Track do
     # If all 4 dates are the same then there is 1 possible configuration
     # In total there are 24 + 36 + 8 + 1 = 69 different cases to check
     describe '#valid_dates'
+
+    describe '#valid_room' do
+      before :each do
+        @conference = create(:conference)
+        @conference.venue = create(:venue, name: 'The venue')
+      end
+
+      context 'is valid' do
+        it 'when the track\'s room belongs to the venue of the conference' do
+          room = create(:room, venue: @conference.venue)
+          track = build(:track, :self_organized, state: 'accepted', program: @conference.program, room: room)
+          expect(track.valid?).to eq true
+        end
+      end
+
+      context 'is invalid' do
+        it 'when the track\'s room doesn\'t belong to the venue of the track\'s conference' do
+          other_conference = create(:conference)
+          other_conference.venue = create(:venue)
+          room = create(:room, venue: other_conference.venue)
+          track = build(:track, :self_organized, state: 'accepted', program: @conference.program, room: room)
+          expect(track.valid?).to eq false
+          expect(track.errors[:room]).to eq ['must be a room of The venue']
+        end
+      end
+    end
   end
 
   describe 'scope' do
