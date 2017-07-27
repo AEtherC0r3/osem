@@ -181,11 +181,11 @@ class Track < ActiveRecord::Base
 
   def valid_dates
     if start_date && program && program.conference && program.conference.start_date && (start_date < program.conference.start_date)
-      errors.add(:start_date, "can't be before the conference start date (#{program.conference.end_date})")
+      errors.add(:start_date, "can't be before the conference start date (#{program.conference.start_date})")
     end
 
     if end_date && program && program.conference && program.conference.start_date && (end_date < program.conference.start_date)
-      errors.add(:end_date, "can't be before the conference start date (#{program.conference.end_date})")
+      errors.add(:end_date, "can't be before the conference start date (#{program.conference.start_date})")
     end
 
     if start_date && program && program.conference && program.conference.end_date && (start_date > program.conference.end_date)
@@ -197,7 +197,7 @@ class Track < ActiveRecord::Base
     end
 
     if start_date && end_date && (start_date > end_date)
-      errors.add(:start_date, 'can\'t be after the end_date')
+      errors.add(:start_date, 'can\'t be after the end date')
     end
   end
 

@@ -64,17 +64,50 @@ describe Track do
       it { is_expected.to_not validate_presence_of(:relevance) }
     end
 
-    # If we assume that the track's and conference's start, end dates are sorted
-    # in explicitly increasing order then we have to test for all possible
-    # permutations which are P(4, 4) = 24
-    # Then we have to also test for equalities
-    # If exactly 2 dates are the same then there are C(4, 2) * P(3, 3) = 36
-    # possibilities
-    # If exactly 3 dates are the same then there are C(4, 3) * P(2, 2) = 8
-    # possibilities
-    # If all 4 dates are the same then there is 1 possible configuration
-    # In total there are 24 + 36 + 8 + 1 = 69 different cases to check
-    describe '#valid_dates'
+    describe '#valid_dates' do
+      before :each do
+        @conference = create(:conference, start_date: 1.day.ago, end_date: 2.days.from_now)
+      end
+
+      context 'is valid' do
+        it 'when the track\'s start date is before it\'s end date and between the conference start/end dates' do
+          track = build(:track, start_date: Date.today, end_date: Date.tomorrow, program: @conference.program)
+          expect(track.valid?).to eq true
+        end
+      end
+
+      context 'is invalid' do
+        it 'when the track\'s start date is before the conference\'s start date' do
+          track = build(:track, start_date: 2.days.ago, end_date: Date.tomorrow, program: @conference.program)
+          expect(track.valid?).to eq false
+          expect(track.errors[:start_date]).to eq ["can't be before the conference start date (#{1.day.ago.to_date})"]
+        end
+
+        it 'when the track\'s end date is before the conference\'s start date' do
+          track = build(:track, start_date: 3.days.ago, end_date: 2.days.ago, program: @conference.program)
+          expect(track.valid?).to eq false
+          expect(track.errors[:end_date]).to eq ["can't be before the conference start date (#{1.day.ago.to_date})"]
+        end
+
+        it 'when the track\'s start date is after the conference\'s end date' do
+          track = build(:track, start_date: 3.days.from_now, end_date: 4.days.from_now, program: @conference.program)
+          expect(track.valid?).to eq false
+          expect(track.errors[:start_date]).to eq ["can't be after the conference end date (#{2.days.from_now.to_date})"]
+        end
+
+        it 'when the track\'s end date is after the conference\'s end date' do
+          track = build(:track, start_date: Date.today, end_date: 3.days.from_now, program: @conference.program)
+          expect(track.valid?).to eq false
+          expect(track.errors[:end_date]).to eq ["can't be after the conference end date (#{2.days.from_now.to_date})"]
+        end
+
+        it 'when the track\'s start date is after it\'s end date' do
+          track = build(:track, start_date: 1.day.from_now, end_date: 1.day.ago)
+          expect(track.valid?).to eq false
+          expect(track.errors[:start_date]).to eq ['can\'t be after the end date']
+        end
+      end
+    end
 
     describe '#valid_room' do
       before :each do
