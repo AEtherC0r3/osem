@@ -26,17 +26,15 @@
         %dt
           Start date:
         %dd
-          - if @track.start_date
-            = @track.start_date.strftime('%A, %B %-d. %Y')
-          - else
-            N/A
+          = @track.start_date.strftime('%A, %B %-d. %Y') if @track.start_date
         %dt
           End date:
         %dd
-          - if @track.end_date
-            = @track.end_date.strftime('%A, %B %-d. %Y')
-          - else
-            N/A
+          = @track.end_date.strftime('%A, %B %-d. %Y') if @track.end_date
+        %dt
+          Room:
+        %dd
+          = @track.room.try(:name)
         %dt
           Description
         %dd

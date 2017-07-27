@@ -14,27 +14,28 @@
         %th Start Date
         %th End Date
         %th Submitter
-        %th Included in the Cfp
+        %th Included in Cfp
         %th State
         %th Actions
       %tbody
         - @tracks.each do |track|
           %tr
             %td{style: "padding: 15px 0px 0px 10px;"}
-              %span.label{style: "background-color: #{track.color}; color: #{ contrast_color(track.color) }"}
-                = track.name
+              = link_to admin_conference_program_track_path(@conference.short_title, track), class: 'btn' do
+                %span.label{style: "background-color: #{track.color}; color: #{ contrast_color(track.color) }"}
+                  = track.name
             %td
               %p
                 = markdown(truncate(track.description))
             %td
-              = link_to track.room.name, admin_conference_venue_room_path(@conference.short_title, track.room.id) if track.room
+              = track.room.try(:name)
             %td
               = track.start_date.strftime('%A, %B %-d. %Y') if track.start_date
             %td
               = track.end_date.strftime('%A, %B %-d. %Y') if track.end_date
             %td
               = link_to track.submitter.name, admin_user_path(track.submitter) if track.self_organized?
-            %td
+            %td.text-center
               = check_box_tag "#{@conference.short_title}_#{track.short_name}", track.id, track.cfp_active,
                 class: 'switch-checkbox', method: :patch,
                 url: toggle_cfp_inclusion_admin_conference_program_track_path(@conference.short_title, id: track.short_name)+"?included=",
@@ -44,7 +45,7 @@
                         on_text: 'Yes',
                         off_text: 'No' }
 
-            %td
+            %td.text-center
               - if track.self_organized?
                 .btn-group
                   %button{ type: 'button', class: 'btn btn-link dropdown-toggle', 'data-toggle' => 'dropdown' }
@@ -56,8 +57,6 @@
                 = track.state.humanize
             %td
               .btn-group{role: "group"}
-                - if can? :show, track
-                  = link_to 'Show', admin_conference_program_track_path(@conference.short_title, track), class: 'btn btn-success'
                 - if can? :edit, track
                   = link_to 'Edit', edit_admin_conference_program_track_path(@conference.short_title, track), class: 'btn btn-primary'
                 - if can? :destroy, track

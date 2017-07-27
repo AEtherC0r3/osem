@@ -41,8 +41,9 @@
                 - elsif %w(rejected withdrawn canceled).include? track.state
                   %span{ title: track.state.humanize, class: 'fa fa-ban'}
               %td{style: "padding: 15px 0px 0px 0px;"}
-                %span.label{style: "background-color: #{track.color}; color: #{ contrast_color(track.color) }"}
-                  = track.name
+                = link_to conference_program_track_path(@conference.short_title, track), class: 'btn' do
+                  %span.label{style: "background-color: #{track.color}; color: #{ contrast_color(track.color) }"}
+                    = track.name
               %td
                 = markdown(truncate(track.description))
               %td
@@ -69,8 +70,6 @@
                   - if track.transition_possible? :restart
                     = link_to 'Re-Submit', restart_conference_program_track_path(@conference.short_title, track),
                       method: :patch, class: 'btn btn-mini btn-success', id: "resubmit_track_request_#{track.id}"
-                  - if can? :show, track
-                    = link_to 'Show', conference_program_track_path(@conference.short_title, track), class: 'btn btn-success'
                   - if can? :edit, track
                     = link_to 'Edit', edit_conference_program_track_path(@conference.short_title, track), class: 'btn btn-default'
 

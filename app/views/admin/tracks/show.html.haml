@@ -37,7 +37,7 @@
               %td
                 %b Room
               %td
-                = link_to @track.room.name, admin_conference_venue_room_path(@conference.short_title, @track.room.id) if @track.room
+                = @track.room.try(:name)
             %tr
               %td
                 %b Start date
