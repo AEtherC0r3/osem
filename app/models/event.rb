@@ -306,9 +306,9 @@ class Event < ActiveRecord::Base
   end
 
   ##
-  # Don't allow trakcs that aren't confirmed or aren't included in the cfp
+  # Allow only confirmed tracks that belong to the same program and are included in the cfp
   def acceptable_track
-    return unless track
-    errors.add(:track, 'must be a regular track or a confirmed self-organized track that accepts proposals') unless track.confirmed? && track.cfp_active
+    return unless track && track.program && program
+    errors.add(:track, 'is invalid') unless track.confirmed? && track.cfp_active && track.program == program
   end
 end
