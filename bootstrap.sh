@@ -5,7 +5,7 @@ pushd /vagrant
 echo -e "\ninstalling required software packages...\n"
 zypper -q -n install update-alternatives ruby2.5-devel make gcc gcc-c++ \
              libxml2-devel libxslt-devel nodejs screen mariadb \
-             libmysqld-devel sqlite3-devel ImageMagick
+             libmysqld-devel sqlite3-devel ImageMagick git postgresql-devel
 
 echo -e "\ndisabling versioned gem binary names...\n"
 echo 'install: --no-format-executable' >> /etc/gemrc
